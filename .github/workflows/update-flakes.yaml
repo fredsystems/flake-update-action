@@ -16,7 +16,7 @@ jobs:
     outputs:
       flake-inputs: ${{ steps.get-flake-inputs.outputs.flake-inputs }}
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           sparse-checkout: flake.lock
       - id: get-flake-inputs
@@ -31,10 +31,10 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.get-flake-inputs.outputs.flake-inputs) }}
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           lfs: false
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
         with:
           extra-conf: accept-flake-config = true
       - run: git config --global user.email "noreply@github.com"
