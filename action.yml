@@ -47,7 +47,7 @@ runs:
   steps:
     - name: Get current commit
       id: get_current_commit
-      uses: cpcloud/flake-dep-info-action@v2.0.13
+      uses: cpcloud/flake-dep-info-action@8334941bf125773c0e9703e6b77ed133844f618b # v2.0.13
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
@@ -58,13 +58,13 @@ runs:
 
     - name: Get new commit
       id: get_new_commit
-      uses: cpcloud/flake-dep-info-action@v2.0.13
+      uses: cpcloud/flake-dep-info-action@8334941bf125773c0e9703e6b77ed133844f618b # v2.0.13
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
 
     - name: Get commit details for ${{ inputs.dependency }} changes
-      uses: cpcloud/compare-commits-action@v5.0.42
+      uses: cpcloud/compare-commits-action@d015f96c2f4161f379535c0cbcdf027f30fa53d3 # v5.0.42
       id: compare_commits
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       with:
@@ -77,7 +77,7 @@ runs:
     - name: Create a pull request to update ${{ inputs.dependency }}
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       id: create_pr
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
       with:
         commit-message: "chore(flake/${{ inputs.dependency }}): ${{ steps.get_current_commit.outputs.short-rev }} -> ${{ steps.get_new_commit.outputs.short-rev }}"
         branch: "${{ inputs.pull-request-branch-prefix }}${{ inputs.dependency }}"
@@ -90,7 +90,7 @@ runs:
 
     - name: Set the PR to automerge
       if: ${{ steps.create_pr.outputs.pull-request-operation == 'created' && fromJSON(inputs.automerge) }}
-      uses: peter-evans/enable-pull-request-automerge@v3
+      uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
       with:
         token: ${{ inputs.pull-request-token }}
         pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
