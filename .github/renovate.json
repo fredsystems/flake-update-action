@@ -1,8 +1,0 @@
-{
-  "extends": ["config:base", ":enablePreCommit"],
-  "semanticCommits": "enabled",
-  "lockFileMaintenance": { "enabled": false },
-  "enabledManagers": ["github-actions"],
-  "automerge": true,
-  "labels": ["dependencies"]
-}

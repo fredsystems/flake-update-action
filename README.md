@@ -16,7 +16,7 @@ jobs:
           - poetry2nix
     steps:
       - name: Update ${{ matrix.dependency }}
-        uses: fredclausen/flake-update-action@*
+        uses: fredsystems/flake-update-action@*
         with:
           dependency: ${{ matrix.dependency }}
           pull-request-token: ${{ secrets.ANOTHER_TOKEN }}
