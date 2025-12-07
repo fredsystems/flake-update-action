@@ -3,7 +3,11 @@
 
   inputs = {
     systems.url = "github:nix-systems/default";
-    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   };
 
   outputs =
@@ -11,61 +15,88 @@
       self,
       systems,
       nixpkgs,
+      git-hooks,
       ...
-    }@inputs:
+    }:
     let
-      forEachSystem = nixpkgs.lib.genAttrs (import systems);
+      eachSystem = nixpkgs.lib.genAttrs (import systems);
     in
     {
-      # Run the hooks with `nix fmt`.
-      formatter = forEachSystem (
+
+      # ============================================================
+      # formatter
+      # ============================================================
+      formatter = eachSystem (
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          inherit (self.checks.${system}.pre-commit-check) config;
-          inherit (config) package configFile;
+          pc = self.checks.${system}.pre-commit-check;
           script = ''
-            ${pkgs.lib.getExe package} run --all-files --config ${configFile}
+            ${pkgs.lib.getExe pc.config.package} run --all-files --config ${pc.config.configFile}
           '';
         in
         pkgs.writeShellScriptBin "pre-commit-run" script
       );
 
-      # Run the hooks in a sandbox with `nix flake check`.
-      # Read-only filesystem and no internet access.
-      checks = forEachSystem (system: {
-        pre-commit-check = inputs.git-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            nixfmt.enable = true;
-            deadnix.enable = true;
-            statix.enable = true;
-            prettier = {
-              enable = true;
-              types_or = [
-                "toml"
-                "json"
-                "yaml"
-                "markdown"
-              ];
+      # ============================================================
+      # checks (flake check)
+      # ============================================================
+      checks = eachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          pre-commit-check = git-hooks.lib.${system}.run {
+            src = ./.;
+
+            hooks = {
+              nixfmt.enable = true;
+
+              deadnix = {
+                enable = true;
+                entry = "${pkgs.deadnix}/bin/deadnix";
+                args = [ "--fail" ];
+                files = "\\.nix$";
+              };
+
+              statix = {
+                enable = true;
+                entry = "${pkgs.statix}/bin/statix";
+                args = [ "check" ];
+                files = "\\.nix$";
+              };
+
+              # Prettier FULLY enabled, including Markdown
+              prettier = {
+                enable = true;
+                types_or = [
+                  "toml"
+                  "json"
+                  "yaml"
+                  "markdown"
+                ];
+              };
             };
           };
-        };
-      });
+        }
+      );
 
-      # Enter a development shell with `nix develop`.
-      # The hooks will be installed automatically.
-      # Or run pre-commit manually with `nix develop -c pre-commit run --all-files`
-      devShells = forEachSystem (system: {
-        default =
-          let
-            pkgs = nixpkgs.legacyPackages.${system};
-            inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
-          in
-          pkgs.mkShell {
-            inherit shellHook;
-            buildInputs = enabledPackages;
+      # ============================================================
+      # devShell
+      # ============================================================
+      devShells = eachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          pc = self.checks.${system}.pre-commit-check;
+        in
+        {
+          default = pkgs.mkShell {
+            inherit (pc) shellHook;
+            buildInputs = pc.enabledPackages;
           };
-      });
+        }
+      );
     };
 }
