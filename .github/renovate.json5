@@ -17,6 +17,7 @@
   prHourlyLimit: 0,
   prCreation: "immediate",
   automerge: false,
+  forkProcessing: true,
   platformAutomerge: true,
   nix: {
     enabled: true,
