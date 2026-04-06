@@ -50,7 +50,7 @@ runs:
   steps:
     - name: Get current commit
       id: get_current_commit
-      uses: fredclausen/flake-dep-info-action@v3.0.0
+      uses: fredsystems/flake-dep-info-action@v3.0.0
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
@@ -61,13 +61,13 @@ runs:
 
     - name: Get new commit
       id: get_new_commit
-      uses: fredclausen/flake-dep-info-action@v3.0.0
+      uses: fredsystems/flake-dep-info-action@v3.0.0
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
 
     - name: Get commit details for ${{ inputs.dependency }} changes
-      uses: fredclausen/compare-commits-action@v6.0.0
+      uses: fredsystems/compare-commits-action@v6.0.0
       id: compare_commits
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       with:
