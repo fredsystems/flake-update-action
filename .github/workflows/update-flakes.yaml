@@ -48,3 +48,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pull-request-branch-prefix: update-
           automerge: false
+          push-to-fork: fredsystems/flake-update-action
