@@ -47,7 +47,7 @@ runs:
   steps:
     - name: Get current commit
       id: get_current_commit
-      uses: cpcloud/flake-dep-info-action@8334941bf125773c0e9703e6b77ed133844f618b # v2.0.13
+      uses: fredclausen/flake-dep-info-action@v3.0.2
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
@@ -58,13 +58,13 @@ runs:
 
     - name: Get new commit
       id: get_new_commit
-      uses: cpcloud/flake-dep-info-action@8334941bf125773c0e9703e6b77ed133844f618b # v2.0.13
+      uses: fredclausen/flake-dep-info-action@v3.0.2
       with:
         input: ${{ inputs.dependency }}
         lockfile: ${{ inputs.path }}/flake.lock
 
     - name: Get commit details for ${{ inputs.dependency }} changes
-      uses: cpcloud/compare-commits-action@d015f96c2f4161f379535c0cbcdf027f30fa53d3 # v5.0.42
+      uses: fredclausen/compare-commits-action@v6.0.0
       id: compare_commits
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       with:
