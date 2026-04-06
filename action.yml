@@ -67,7 +67,7 @@ runs:
         lockfile: ${{ inputs.path }}/flake.lock
 
     - name: Get commit details for ${{ inputs.dependency }} changes
-      uses: fredsystems/compare-commits-action@4b8ccdd548c91f1a7c4495c8662077922434b467 # v6.0.1
+      uses: fredsystems/compare-commits-action@99463327e6614016181c24b96fb1dccf3d120632 # v6.0.2
       id: compare_commits
       if: ${{ steps.get_current_commit.outputs.rev != steps.get_new_commit.outputs.rev }}
       with:
