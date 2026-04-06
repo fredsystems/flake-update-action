@@ -39,7 +39,7 @@ jobs:
           extra-conf: accept-flake-config = true
       - run: git config --global user.email "noreply@github.com"
       - run: git config --global user.name "github[bot]"
-      - uses: fredclausen/flake-update-action@b64bc2039bda39d47858d4e8d69ebf698c63630c # main
+      - uses: fredclausen/flake-update-action@main
         with:
           dependency: ${{ matrix.flake }}
           pull-request-token: ${{ secrets.GITHUB_TOKEN }}
