@@ -90,7 +90,7 @@ runs:
         token: ${{ inputs.pull-request-token }}
         body: ${{ steps.compare_commits.outputs.differences }}
         labels: ${{ inputs.pull-request-labels }}
-        push-to-work: ${{ inputs.push-to-fork }}
+        push-to-fork: ${{ inputs.push-to-fork }}
 
     - name: Set the PR to automerge
       if: ${{ steps.create_pr.outputs.pull-request-operation == 'created' && fromJSON(inputs.automerge) }}
